@@ -1,1 +1,17 @@
-# VictorEvdokimov-YandexPraktikum13
+# YandexPracticum13
+
+Version 0.0.1
+
+Приложение для создания галереи картинок с возможностью отметки лайка и удалением. 
+
+Тренировочный проект YandexPraktikum
+
+Используются: JavaScript, CSS, HTML, GIT, Node.js, MongoDB
+
+Для локального запуска, склонируйте репозиторий, установите npm и выполните команду:
+
+`npm run start` 
+
+для запуска в режиме разработки используйте команду:
+
+`npm run dev`
