@@ -7,8 +7,14 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUsersId = (req, res) => {
-  User.findById(req.params.id)
-    .then((users) => res.send({ data: users }))
+  User.findOne({ _id: req.params.userId })
+    .then((user) => {
+      if (user) {
+        res.send({ data: user });
+      } else {
+        res.status(404).send({ message: 'Пользователь не найден' });
+      }
+    })
     .catch((err) => res.status(500).send({ message: err.message }));
 };
 
@@ -17,5 +23,11 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: `Ошибка валидации: ${err.message}` });
+      } else {
+        res.status(500).send({ message: err.message });
+      }
+    });
 };
