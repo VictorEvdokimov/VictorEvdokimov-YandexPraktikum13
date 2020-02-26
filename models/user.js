@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
+    validate: {
+      validator: (v) => /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\\.-]+)+[\w\-\\._~:/?#[\]@!\\$&'\\(\\)\\*\\+,;=.]+$/gm.test(v),
+      message: (props) => `${props.value} is not a valid url!`,
+    },
     required: true,
   },
 });
