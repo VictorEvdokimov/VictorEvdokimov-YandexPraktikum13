@@ -1,6 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const config = require('config');
 const User = require('../models/user');
+
+const key = config.get('key');
+const timeactivityPeriod = config.get('period');
 
 module.exports.createUser = (req, res) => {
   const {
@@ -29,10 +33,9 @@ module.exports.createUser = (req, res) => {
         email,
         password: hash,
       }))
+      .then((cratedUser) => User.findById(cratedUser._id))
       .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        res.status(500).send({ message: err.message });
-      });
+      .catch((err) => res.status(500).send({ message: err.message }));
   }
 };
 
@@ -40,7 +43,7 @@ module.exports.login = (req, res) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, key, { expiresIn: timeactivityPeriod });
       res.send({ token });
     })
     .catch((err) => {

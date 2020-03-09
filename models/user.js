@@ -12,11 +12,13 @@ const userSchema = new mongoose.Schema({
   about: {
     type: String,
     required: true,
+    minlength: 2,
+    maxlength: 200,
   },
   avatar: {
     type: String,
     validate: {
-      validator: (v) => /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\\.-]+)+[\w\-\\._~:/?#[\]@!\\$&'\\(\\)\\*\\+,;=.]+$/gm.test(v),
+      validator: (url) => validator.isURL(url),
       message: (props) => `${props.value} is not a valid url!`,
     },
     required: true,
@@ -38,6 +40,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// eslint-disable-next-line
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
