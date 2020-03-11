@@ -25,17 +25,32 @@ module.exports.getUsersId = (req, res) => {
   }
 };
 
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  const newUser = { name, about, avatar };
-  const error = new User(newUser).validateSync();
-  if (error) {
-    res.status(400).send({ message: 'Ошибка валидации' });
-  } else {
-    User.create({ name, about, avatar })
-      .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        res.status(500).send({ message: err.message });
-      });
-  }
+module.exports.updateUserProfile = (req, res) => {
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name: req.body.name, about: req.body.about },
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch((err) => res.status(500).send({ message: err.message }));
+};
+
+module.exports.updateUserAvatar = (req, res) => {
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar: req.body.avatar },
+    {
+      new: true,
+      runValidators: true,
+    },
+  )
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
